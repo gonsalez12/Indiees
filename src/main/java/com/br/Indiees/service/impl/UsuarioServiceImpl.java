@@ -1,5 +1,6 @@
 package com.br.Indiees.service.impl;
 
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.br.Indiees.exception.ErroAutenticacao;
 import com.br.Indiees.exception.RegraNegocioException;
 import com.br.Indiees.model.entity.Usuario;
+import com.br.Indiees.model.repository.PerfilRepository;
 import com.br.Indiees.model.repository.UsuarioRepository;
 import com.br.Indiees.service.UsuarioService;
 
@@ -17,6 +19,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	private UsuarioRepository repository;
 	private PasswordEncoder encoder;
+	private PerfilRepository perfilRepository;
 	
 	public UsuarioServiceImpl(
 			UsuarioRepository repository, 
@@ -48,6 +51,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	@Transactional
 	public Usuario salvarUsuario(Usuario usuario) {
+		usuario.setData_criacao(new Date());
 		validarEmail(usuario.getEmail());
 		criptografarSenha(usuario);
 		return repository.save(usuario);
