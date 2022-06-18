@@ -8,11 +8,11 @@
 		<version>2.2.2.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.dsousa</groupId>
-	<artifactId>minhasfinancas</artifactId>
+	<groupId>com.br</groupId>
+	<artifactId>Indiees</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>minhasfinancas</name>
-	<description>Projeto de gerenciamento de finanças pessoais</description>
+	<name>Indiees</name>
+	<description>Projeto um tipo mercado livre</description>
 
 	<properties>
 		<java.version>1.8</java.version>
