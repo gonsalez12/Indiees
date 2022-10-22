@@ -59,7 +59,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 				.antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 				.antMatchers(HttpMethod.POST, "/api/usuarios/autenticar").permitAll()
-				.antMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
+				.antMatchers(HttpMethod.POST, "/api/usuarios/salvar").permitAll()
 				.anyRequest().authenticated()	
 		.and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
