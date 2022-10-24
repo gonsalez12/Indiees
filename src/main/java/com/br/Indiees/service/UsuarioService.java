@@ -2,6 +2,7 @@ package com.br.Indiees.service;
 
 import java.util.Optional;
 
+import com.br.Indiees.dto.UsuarioDTO;
 import com.br.Indiees.model.entity.Usuario;
 
 public interface UsuarioService {
@@ -13,5 +14,9 @@ public interface UsuarioService {
 	void validarEmail(String email);
 	
 	Optional<Usuario> obterPorId(Long id);
+
+	Usuario esqueciSenha(String email);
+
+	Usuario alterarSenha(UsuarioDTO usuarioDTO);
 	
 }

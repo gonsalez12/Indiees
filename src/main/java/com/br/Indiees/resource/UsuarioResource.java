@@ -2,12 +2,10 @@ package com.br.Indiees.resource;
 
 import java.util.Optional;
 
+import com.br.Indiees.service.EmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.br.Indiees.dto.TokenDTO;
 import com.br.Indiees.dto.UsuarioDTO;
@@ -27,6 +25,9 @@ import lombok.RequiredArgsConstructor;
 public class UsuarioResource {
 
 	private final UsuarioService service;
+
+
+
 	private final JwtService jwtService;
 	private final PerfilRepository perfilRepository;
 	
@@ -35,7 +36,13 @@ public class UsuarioResource {
 		try {
 			Usuario usuarioAutenticado = service.autenticar(dto.getEmail(), dto.getSenha());
 			String token = jwtService.gerarToken(usuarioAutenticado);
-			TokenDTO tokenDTO = new TokenDTO( usuarioAutenticado.getNome(), token);
+			TokenDTO tokenDTO = TokenDTO.builder()
+					.nome(usuarioAutenticado.getNome())
+					.email(usuarioAutenticado.getEmail())
+					.perfil(usuarioAutenticado.getPerfil().getDescricao())
+					.esqueci_senha(usuarioAutenticado.getEsqueci_senha())
+					.token(token)
+					.build();
 			return ResponseEntity.ok(tokenDTO);
 		}catch (ErroAutenticacao e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -88,8 +95,28 @@ public class UsuarioResource {
 		}
 		
 	}
-	
-	
-	
-	
+
+	@PostMapping("/esqueciSenha")
+		public ResponseEntity<?> esqueciSenha(@RequestBody UsuarioDTO dto){
+		try {
+			Usuario usuario = service.esqueciSenha(dto.getEmail());
+			return new ResponseEntity("ok", HttpStatus.OK);
+		}catch (ErroAutenticacao e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+
+	}
+
+	@PostMapping("/alterarSenha")
+	public ResponseEntity<?> alterarSenha(@RequestBody UsuarioDTO dto){
+		try {
+			Usuario usuario = service.alterarSenha(dto);
+			return new ResponseEntity("ok", HttpStatus.OK);
+		}catch (ErroAutenticacao e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+
+
 }
