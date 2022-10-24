@@ -43,8 +43,10 @@ public class Usuario {
 	
 	@Column(name = "data_criacao")
 	private Date data_criacao;
-	
-	
+
+	@Column(name = "esqueci_senha")
+	private Boolean esqueci_senha;
+
 	@ManyToOne
 	@JoinColumn(name = "id_perfil")
 	private Perfil perfil;

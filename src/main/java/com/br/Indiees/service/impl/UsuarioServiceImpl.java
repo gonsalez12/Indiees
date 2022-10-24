@@ -2,7 +2,11 @@ package com.br.Indiees.service.impl;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
+import com.br.Indiees.dto.UsuarioDTO;
+import com.br.Indiees.service.EmailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +24,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 	private UsuarioRepository repository;
 	private PasswordEncoder encoder;
 	private PerfilRepository perfilRepository;
+
+	@Autowired
+	private EmailService emailService;
 	
 	public UsuarioServiceImpl(
 			UsuarioRepository repository, 
@@ -76,4 +83,31 @@ public class UsuarioServiceImpl implements UsuarioService {
 		return repository.findById(id);
 	}
 
+	@Override
+	public Usuario esqueciSenha(String email) {
+		Optional<Usuario> usuario = repository.findByEmail(email);
+		if(!usuario.isPresent()) {
+			throw new ErroAutenticacao("Usuário não encontrado para o email informado.");
+		}
+		usuario.get().setEsqueci_senha(Boolean.TRUE);
+		UUID uuid = UUID.randomUUID();
+		String senhaAleatoria = uuid.toString().substring(0,8)	;
+		String senha = encoder.encode(senhaAleatoria);
+		usuario.get().setSenha(senha);
+		repository.save(usuario.get());
+		emailService.envioSenha(usuario.get().getEmail(),senhaAleatoria );
+		return usuario.get();
+	}
+
+	@Override
+	public Usuario alterarSenha(UsuarioDTO usuarioDTO) {
+		Optional<Usuario> usuario = repository.findByEmail(usuarioDTO.getEmail());
+		if(!usuario.isPresent()) {
+			throw new ErroAutenticacao("Usuário não encontrado para o email informado.");
+		}
+		usuario.get().setEsqueci_senha(Boolean.FALSE);
+		usuario.get().setSenha(encoder.encode(usuarioDTO.getSenha()));
+		repository.save(usuario.get());
+		return usuario.get();
+	}
 }
